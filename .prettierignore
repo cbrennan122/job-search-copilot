@@ -1,0 +1,21 @@
+# Generated or vendored — nothing here is hand-edited, so formatting it only
+# creates churn and merge conflicts.
+node_modules/
+.next/
+out/
+build/
+coverage/
+next-env.d.ts
+
+# npm owns this file's layout; reformatting it fights every `npm install`.
+package-lock.json
+
+# Markdown is deliberately excluded. Prettier reflows prose and would rewrite
+# AGENTS.md wholesale, burying real content changes in wrapping churn. The
+# gate is for code.
+*.md
+
+# Local, gitignored data — the user's résumé, config and generated artifacts.
+profile/
+resumes/
+data/

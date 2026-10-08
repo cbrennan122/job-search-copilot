@@ -1,0 +1,289 @@
+:root {
+  --bg: #f7f7f8;
+  --card: #ffffff;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --muted: #71717a;
+  --accent: #4f46e5;
+  --accent-fg: #ffffff;
+  --good: #16a34a;
+  --mid: #ca8a04;
+  --low: #9ca3af;
+  --danger: #dc2626;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d0d0f;
+    --card: #18181b;
+    --border: #27272a;
+    --text: #f4f4f5;
+    --muted: #a1a1aa;
+    --accent: #818cf8;
+    --accent-fg: #0d0d0f;
+    --good: #4ade80;
+    --mid: #facc15;
+    --low: #52525b;
+    --danger: #f87171;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+header.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+header.top h1 {
+  font-size: 22px;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 13px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+label.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+select,
+input {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 14px;
+}
+
+button {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+button:hover {
+  filter: brightness(1.08);
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+button.ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+button.danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--border);
+}
+/* Sized to sit in a card's pill row rather than to lead a header. Kept quiet
+   until hover: dismissing is a one-click, mildly destructive action and should
+   not be the loudest thing on a tile. */
+.card button.danger {
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.card button.danger:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+  filter: none;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  display: block;
+}
+a.card:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+.card h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+.card .meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+.card .reason {
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.spacer {
+  flex: 1;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+.badge.good {
+  background: var(--good);
+}
+.badge.mid {
+  background: var(--mid);
+  color: #1a1a1a;
+}
+.badge.low {
+  background: var(--low);
+}
+.badge.none {
+  background: transparent;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+}
+
+.pill {
+  font-size: 12px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.pill.applied {
+  color: var(--good);
+  border-color: var(--good);
+}
+
+/* Role-family chip. Only the most-preferred family is highlighted — a distinct
+   colour per family would compete with the fit badge and the status pill for
+   the same glance. Uses the existing accent var, so dark mode needs no rule. */
+.pill.cat-swe {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+pre.resume,
+pre.answers {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  max-height: 60vh;
+  overflow: auto;
+}
+ul.artifacts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+ul.artifacts li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+ul.artifacts li:last-child {
+  border-bottom: none;
+}
+/* Absolute paths are long; let them wrap rather than widening the page. */
+ul.artifacts code {
+  word-break: break-all;
+  color: var(--muted);
+}
+
+.jd {
+  white-space: pre-wrap;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  max-height: 340px;
+  overflow: auto;
+  font-size: 14px;
+}
+section {
+  margin-top: 24px;
+}
+section h2 {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.error {
+  color: var(--danger);
+  font-size: 14px;
+}

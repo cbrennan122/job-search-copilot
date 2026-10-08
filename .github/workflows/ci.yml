@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 20.12 is the real floor: process.loadEnvFile (lib/env.ts) does not
+        # exist before it, and every CLI entry point calls it. 22 is what the
+        # project is developed on. Testing both keeps the engines range honest.
+        node-version: ["20.12", "22"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      # better-sqlite3 is a native module, so this compiles on first install.
+      - run: npm ci
+
+      # No ANTHROPIC_API_KEY here on purpose: everything below must pass without
+      # one. The LLM paths (fit scoring, tailoring) are the only parts that need
+      # a key, and they are not exercised by the suite.
+      - run: npm run typecheck
+      - run: npm run lint
+
+      # Formatting is a separate gate from lint, because eslint here is
+      # eslint-config-next and enforces no layout whatsoever — it passes a
+      # deliberately mangled file with exit 0. Without this step "lint passed"
+      # says nothing about formatting.
+      - run: npm run format:check
+
+      - run: npm test
+
+      # The build needs the profile files to resolve; the real ones are
+      # gitignored, so stand up the committed templates.
+      - name: Seed profile from templates
+        run: |
+          cp profile/profile.example.toml profile/profile.toml
+          cp profile/resume_base.example.md profile/resume_base.md
+      - run: npm run build
+
+  # Browser tests, in their own job: they need a ~115MB Chromium download and a
+  # production build, and there is no reason to pay that on the two Node versions
+  # the unit matrix covers. Still no ANTHROPIC_API_KEY — the one spec that would
+  # need it stubs /api/tailor at the network layer instead.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # playwright.config.ts runs `next build`, which needs the profile files to
+      # resolve; the real ones are gitignored, so stand up the committed templates.
+      - name: Seed profile from templates
+        run: |
+          cp profile/profile.example.toml profile/profile.toml
+          cp profile/resume_base.example.md profile/resume_base.md
+
+      # The suite serves from its own seeded fixture DB (JOB_COPILOT_DB, set in
+      # playwright.config.ts), so it never depends on a real queue existing.
+      - run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

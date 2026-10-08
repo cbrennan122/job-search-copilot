@@ -1,0 +1,59 @@
+{
+  "name": "job-copilot",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "tsx --test tests/unit/*.test.ts",
+    "test:integration": "tsx --test tests/integration/*.test.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run test:e2e",
+    "verify:fast": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "fetch": "tsx scripts/fetch.ts",
+    "fetch:no-score": "tsx scripts/fetch.ts --no-score",
+    "tailor": "tsx scripts/tailor.ts",
+    "docx": "tsx scripts/to-docx.ts",
+    "check-docx": "tsx scripts/dump-docx.ts --check",
+    "dump-docx": "tsx scripts/dump-docx.ts",
+    "check-resume": "tsx scripts/check-resume.ts",
+    "gaps": "tsx scripts/gap-report.ts",
+    "cover": "tsx scripts/cover-letter.ts",
+    "digest": "tsx scripts/digest.ts",
+    "score": "tsx scripts/score.ts",
+    "rescore": "tsx scripts/rescore.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0",
+    "better-sqlite3": "^12.11.1",
+    "docx": "^9.7.1",
+    "jszip": "^3.10.1",
+    "next": "16.3.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "smol-toml": "^1.7.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.3",
+    "prettier": "3.9.6",
+    "tsx": "^4.23.0",
+    "typescript": "^5"
+  }
+}

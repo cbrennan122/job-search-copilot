@@ -1,0 +1,93 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+# ...except the template README tells you to copy. `.env*` above swallowed it, so a
+# fresh clone had nothing to copy and setup failed at step one.
+!.env.local.example
+
+# Claude Code local settings — per-machine tool permissions, including absolute
+# scratchpad paths. Ignored by this machine's global gitignore too, but that does not
+# travel with a clone, and this repo is meant to go public.
+.claude/settings.local.json
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# job-copilot
+/data/
+.env.local
+.env
+
+# Personal profile data — contact details and a private target-company list.
+# Committed templates live alongside as *.example.*; copy them and fill in locally.
+/profile/resume_base.md
+/profile/profile.toml
+
+# Generated application artifacts — regenerate with scripts/tailor.ts + scripts/to-docx.ts.
+# These carry the user's phone, email, and (in *-answers.md) salary posture, so none of it
+# is ever committed.
+#
+# /resumes/ is where they live: one directory holding a job's JD, tailored .md, answers and
+# .docx, instead of a littered repo root. Ignored whole, so it does not exist in a fresh
+# clone — lib/outfile.ts creates it on first write rather than failing after the LLM call.
+/resumes/
+#
+# The root-level rules stay as a backstop, because --out still accepts any path and a single
+# stray `--out tailored.md` is a résumé with a phone number in it committed to a public repo.
+# This is an ALLOWLIST, not a pattern match: every root-level .md/.docx/.txt is treated as
+# generated output unless named below. Filename-convention patterns (/tailored*.md) were
+# tried first and leaked — real files got named after the company/role and matched nothing.
+/*.md
+/*.docx
+/*.txt
+!/README.md
+!/AGENTS.md
+!/CLAUDE.md
+
+# Throwaway probe scripts. A one-off query against lib/store.ts has to run from INSIDE the
+# repo — Node resolves imports from the script's own directory, so the same file under
+# /tmp cannot see node_modules and fails on both "./lib/store" and "jszip". AGENTS.md tells
+# you to write it here and delete it; this makes forgetting harmless rather than a commit.
+/*.probe.ts
+
+# Playwright: fixture DB + run output
+/tests/ui/.tmp/
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/

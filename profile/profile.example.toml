@@ -1,0 +1,146 @@
+# Example targeting config. Copy to profile/profile.toml and edit — that copy is
+# gitignored, so your real target list stays local.
+
+[match]
+# Titles you'd accept (case-insensitive substring match against the job title).
+titles = [
+  "devops",
+  "site reliability",
+  "sre",
+  "platform engineer",
+  "infrastructure engineer",
+  "cloud engineer",
+  "software engineer",
+  "backend engineer",
+]
+
+# Skills/keywords that signal a good fit (matched against title + description).
+keywords = [
+  "ci/cd",
+  "terraform",
+  "kubernetes",
+  "k8s",
+  "docker",
+  "aws",
+  "gcp",
+  "ansible",
+  "gitops",
+  "prometheus",
+  "observability",
+  "pipeline",
+]
+
+# Titles/keywords to down-weight. These still surface, but get penalized in the
+# prefilter so they rank below your primary targets.
+#
+# These are SUBSTRING matches against the title (-40) and the description (-15),
+# so pick terms that cannot appear inside a longer word. "intern" was here and
+# also fired on "internal", which 70% of real job descriptions contain versus 2%
+# for "internship" — a silent -15 on almost every job.
+deprioritize = ["internship", "contract", "junior"]
+
+# --- Role families (optional) ---------------------------------------------
+# The queue is ranked by fit score PLUS a per-family preference weight, so a
+# role in a family you prefer surfaces above a slightly better-fitting role in
+# one you don't. The weight moves ordering only — the score you see on a card,
+# and the one `min fit` filters on, is the honest fit and is never adjusted.
+#
+# The families and their patterns live in lib/categories.ts, which is where to
+# look for the full pattern lists. The weights in force are:
+#
+#     Software Engineer   18
+#     DevOps / SRE        10
+#     SDET / Automation    4
+#     Other                0   (implicit; nothing is ever penalized)
+#
+# The gap is the knob. swe(18) - devops(10) = 8 means a DevOps role has to beat
+# a software engineering one by more than 8 points of real fit before it ranks
+# higher. Raise the gap for a stronger preference, or flatten all the weights to
+# equal numbers to go back to pure score order.
+#
+# To override, uncomment and list the families you want IN MATCH ORDER — the
+# first one whose patterns hit the title wins, so the most specific goes first
+# ("QA Software Engineer" must reach `sdet` before `swe` can claim it). This
+# REPLACES the built-in list rather than merging with it, so include every
+# family you want classified.
+#
+# [[match.categories]]
+# id = "sdet"
+# label = "SDET / Automation"
+# weight = 4
+# patterns = ["sdet", "software engineer in test", "qa", "test automation"]
+#
+# [[match.categories]]
+# id = "devops"
+# label = "DevOps / SRE"
+# weight = 10
+# patterns = ["devops", "site reliability", "sre", "platform engineer"]
+#
+# [[match.categories]]
+# id = "swe"
+# label = "Software Engineer"
+# weight = 18
+# patterns = ["software engineer", "backend engineer", "full stack engineer"]
+
+# Countries you would actually take a job in. REQUIRED, and there is no
+# "anywhere": name them. Jobs elsewhere are hidden from the queue by default and
+# cost no LLM calls; the Location control in the dashboard reveals them. Nothing
+# is ever deleted, and widening this list brings them straight back.
+# Names or two-letter ids from lib/locations.ts; an unknown one is an error.
+countries = ["United States"]
+
+# If true, drop anything that isn't clearly remote.
+remote_only = false
+
+# Minimum prefilter score (0-100) a job needs before we spend an LLM call scoring it.
+prefilter_threshold = 25
+
+[greenhouse]
+# Company board tokens (the slug in boards.greenhouse.io/<token>).
+# Start with a handful you'd actually want to work for; add more over time.
+companies = ["example-co", "another-co"]
+
+[lever]
+# Company slugs (the part in jobs.lever.co/<slug>). Free public API.
+companies = ["example-co"]
+
+[ashby]
+# Org slugs (the part in jobs.ashbyhq.com/<slug>). Free public API.
+companies = ["example-co"]
+
+[remoteok]
+# Free remote-only feed. Set true to include.
+enabled = true
+
+[jsearch]
+# Catch-all across LinkedIn/Indeed/Glassdoor via Google for Jobs. Called direct
+# from the publisher (OpenWeb Ninja), not RapidAPI — needs OPENWEBNINJA_API_KEY.
+# Free tier is 200 requests/month and one request is one query-page, so this
+# block costs len(queries) * pages per fetch. Keep the queries focused.
+queries = [
+  "devops engineer remote",
+  "site reliability engineer remote",
+  "platform engineer ci/cd remote",
+]
+pages = 1
+
+[usajobs]
+# Official U.S. federal jobs API. Free, but needs USAJOBS_API_KEY + USAJOBS_EMAIL
+# in .env.local (register at developer.usajobs.gov). Skipped when either is missing.
+queries = [
+  "devops engineer",
+  "site reliability engineer",
+]
+results_per_page = 100
+
+[adzuna]
+# Free-tier aggregator. Needs ADZUNA_APP_ID + ADZUNA_APP_KEY in .env.local
+# (register at developer.adzuna.com). Skipped when either is missing.
+# country is an Adzuna country code: us, gb, ca, au, de, fr, ...
+country = "us"
+queries = [
+  "devops engineer",
+  "site reliability engineer",
+]
+pages = 1
+results_per_page = 50
